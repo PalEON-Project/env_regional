@@ -1,3 +1,5 @@
 env_drivers_bjorn/
 phase1a_env_drivers_v4/
 phase2_env_drivers*/
+env_drivers_raw/
+*.history
