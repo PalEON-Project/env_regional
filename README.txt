@@ -65,7 +65,29 @@ There are 6 Environmental Drivers.
                Center, Oak Ridge, Tennessee, U.S.A. doi:10.3334/ORNLDAAC/961
    — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/961 (http://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=961)
    — Date Accessed: 17 September, 2015
-   — Additional Notes: 
+   — Additional Notes: We are using the half-degree “potential_veg” product (not potential_veg_diffs)
+     Codes & Biome Types are as follows: (taken from 0_potential_veg_readme.txt)
+       Class #     Biome Type
+       -------     ----------
+          0        Water Bodies (Water bodies OR missing data for
+                   "potential_veg_diffs_XX.asc" files)
+          1        Tropical Evergreen Forest/Woodland
+          2        Tropical Deciduous Forest/Woodland
+          3        Temperate Broadleaf Evergreen Forest/Woodland
+          4        Temperate Needleleaf Evergreen Forest/Woodland
+          5        Temperate Deciduous Forest/Woodland
+          6        Boreal Evergreen Forest/Woodland
+          7        Boreal Deciduous Forest/Woodland
+          8        Mixed Forest
+          9        Savanna
+         10        Grassland/Steppe
+         11        Dense Shrubland
+         12        Open Shrubland
+         13        Tundra
+         14        Desert
+         15        Polar desert/Rock/Ice
+         16        No Data over Land (not included in "potential_veg_diffs_XX.asc" 
+                   files)
 
 6) Nitrogen Deposition
    — File Path/Name:
