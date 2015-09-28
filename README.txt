@@ -11,7 +11,7 @@ data will be made available upon request.
 There are 6 Environmental Drivers.  
 1) Land Mask
    — File Path/Name: domain_mask/paleon_domain.nc
-   — File Format: netcdf
+   — File Format: netcdf, dim=[lon,lat]
    — Processing Scripts: 1_paleon_mask.R
    — File Description: This is a spatial file that all data (drivers & outputs) should 
      match spatial.  Resolution: 0.5-degree, bounding box (xmin, xmax, ymin, ymax): -100, -60, 35, 50
@@ -34,14 +34,60 @@ There are 6 Environmental Drivers.
    — Additional Notes: 
 
 3) Land-Use
-   — File Path/Name:
-   — File Format:
-   — Processing Script:
-   — File Description:
-   — Citation:
-   — Web Link:
-   — Date Accessed: 
-   — Additional Notes: 
+   — File Path/Name:lulcc/paleon_lulcc_*.nc
+   — File Format: netcdf, dim=[time,lat,lon]
+   — Processing Script: 3_lulcc.R
+   — File Description:Spatial time series describing fractional land use types, fraction land use 
+     transition, and harvest statistics (area, biomass).  These are modified Hurtt and differ greatly
+     from MsTMIP drivers due to land use classifications.
+   — Citation: Chini, L.P., G.C. Hurtt, and S. Frolking. 2014. Harmonized Global Land Use for Years 
+               1500-2100, V1. Data set. Available on-line [http://daac.ornl.gov] from Oak Ridge 
+               National Laboratory Distributed Active Archive Center, Oak Ridge, Tennessee, USA. 
+               http://dx.doi.org/10.3334/ORNLDAAC/1248
+   — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1248
+   — Date Accessed: 28 September, 2015
+   — Additional Notes: PalEON drivers are from LUHa.v1 files only, which are 1500-2005, with no urban 
+     land. Raw files are provided in a format similar to the original.  Utility scripts will be generated
+     to help reformat drivers for particular models. 
+
+     Variable codes are as follows:
+     Variable	Description
+     Land Cover- Units=fraction (%) of each grid cell
+       gcrop   cropland
+       gothr   primary land
+       gpast   pasture
+       gsecd   secondary land
+       gurbn   urban land
+     Secondary land characteristics                     Units
+       gssma   mean age of secondary land               years
+       gssmb   mean biomass density of secondary land   kgC/m2
+     Wood harvest data	                                                                                Units
+       gfsh1   fraction of each grid cell that had wood harvested from mature secondary forested land   fraction (%) of each grid cell
+       gfsh2   fraction of each grid cell that had wood harvested from mature secondary forested land   fraction (%) of each grid cell
+       gfsh3   fraction of each grid cell that had wood harvested from secondary non-forested land      fraction (%) of each grid cell
+       gfvh1   fraction of each grid cell that had wood harvested from primary forested land            fraction (%) of each grid cell
+       gfvh2   fraction of each grid cell that had wood harvested from primary non-forested land        fraction (%) of each grid cell
+       gsbh1   mature secondary forest biomass harvested                                                kgC
+       gsbh2   young secondary forest biomass harvested                                                 kgC
+       gsbh3   secondary non-forest biomass harvested                                                   kgC
+       gvbh1   primaryforest biomass harvested                                                          kgC
+       gvbh2   primary non-forest biomass harvested                                                     kgC
+     Secondary land characteristics- Units=fraction (%) of each grid cell
+       gflcp   transition from cropland to pasture
+       gflcs   transition from cropland to secondary land
+       gflcu   transition from cropland to urban land
+       gflpc   transition from pasture to cropland
+       gflps   transition from pasture to secondary land
+       gflpu   transition from pasture to urban land
+       gflsc   transition from secondary land to cropland
+       gflsp   transition from secondary land to pasture
+       gflsu   transition from secondary land to urban land
+       gfluc   transition from urban land to crop
+       gflup   transition from urban land to pasture
+       gflus   transition from urban land to secondary land
+       gflvc   transition from primary land to cropland
+       gflvp   transition from primary land to pasture
+       gflvu   transition from primary land to urban land
 
 4) Soil
    — File Path/Name:
@@ -54,10 +100,12 @@ There are 6 Environmental Drivers.
    — Additional Notes: 
 
 5) Biome
-   — File Path/Name:
-   — File Format:
-   — Processing Script:
-   — File Description:
+   — File Path/Name: biome/biome_potential_vegtype_dominant.nc; biome/biome_potential_vegtype_relative.nc
+   — File Format: netcdf; dim=[PFT, lat, lon]
+   — Processing Script: 5_biome.R
+   — File Description: This file contains the potential dominant vegetation type (*_dominant.nc) and 
+     estimate fraction of each vegetation type (*_relative.nc) in a grid cell.  Fraction of each vegetation
+     type in a grid cell was estimated using a 5 x 5 degree smoothing.
    — Citation: Ramankutty, N. and J.A. Foley. 2010. ISLSCP II Potential Natural Vegetation Cover. 
                In Hall, Forest G., G. Collatz, B. Meeson, S. Los, E. Brown de Colstoun, and D. 
                Landis (eds.). ISLSCP Initiative II Collection. Data set. Available on-line 
