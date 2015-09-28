@@ -7,10 +7,10 @@
 # Mask Proceedure
 # --------------
 # 1) Open raw potential veg file
-# 2) Crop to paleon domain extent
-# 3) resample to make sure grid cells line up
-# 4) Get rid of sparse water values by using whatever had the greatest weight above
-# 5) Calculate percent PFT over a 5˚window
+# 2) Calculate percent PFT over a 5˚window
+# 3) Crop to paleon domain extent
+# 4) resample to make sure grid cells line up
+# 5) Get rid of sparse water values by using whatever had the greatest weight above
 # 6) Mask to make sure we have consistent land/water coverage
 # 7) Convert to .nc file for consistent convention
 # --------------
@@ -23,9 +23,9 @@
 # ----------------------------------------------
 library(ncdf4); library(raster); library(rgdal)
 
-paleon.mask <- "~/Desktop/Research/PalEON CR/env_regional/phase2_env_drivers_v1/domain_mask/paleon_domain.nc"
-biom.path <- "~/Desktop/Research/PalEON CR/env_regional/env_drivers_raw/biome/ISLSCP_II_POT_VEG_961/data/potential_veg_hd.asc"
-biom.out <- "~/Desktop/Research/PalEON CR/env_regional/phase2_env_drivers_v1/biome"
+paleon.mask <- "~/Dropbox/PalEON CR/env_regional/phase2_env_drivers_v1/domain_mask/paleon_domain.nc"
+biom.path <- "~/Dropbox/PalEON CR/env_regional/env_drivers_raw/biome/ISLSCP_II_POT_VEG_961/data/potential_veg_hd.asc"
+biom.out <- "~/Dropbox/PalEON CR/env_regional/phase2_env_drivers_v1/biome"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(biom.out)) dir.create(biom.out)
@@ -45,11 +45,11 @@ paleon <- raster(paleon.mask)
 # Assume that the long/lat is WGS84 and lines up with PalEON
 biome.raw <- raster(biom.path, crs="+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 biome.raw
-plot(biome.raw) # Just to double check that things got read in okay
+# plot(biome.raw) # Just to double check that things got read in okay
 
 # 2) Calculate the percent coverage of each PFT in a given cell based on a 5˚ x 5˚ window
 # 2.1) First, put each PFT in its own layer
-pfts <- stack(biom.raw)
+pfts <- stack(biome.raw)
 projection(pfts) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 pfts$pft4  <- biome.raw; pfts$pft4 [!pfts$pft4 == 4] <- 0
 pfts$pft5  <- biome.raw; pfts$pft5 [!pfts$pft5 == 5] <- 0
@@ -57,11 +57,11 @@ pfts$pft6  <- biome.raw; pfts$pft6 [!pfts$pft6 == 6] <- 0
 pfts$pft8  <- biome.raw; pfts$pft8 [!pfts$pft8 == 8] <- 0
 pfts$pft9  <- biome.raw; pfts$pft9 [!pfts$pft9 == 9] <- 0
 pfts$pft10 <- biome.raw; pfts$pft10[!pfts$pft10==10] <- 0
-plot(pfts)
+# plot(pfts)
 
 # 2.2) assign an importance on a scale of 0-1; note: becuase the cells are currently
 #    being evaluated as numeric, the weight needs to be 1/pftID
-f.pfts <- stack(biom.raw)
+f.pfts <- stack(biome.raw)
 projection(f.pfts) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 f.pfts$pft4  <- focal(pfts$pft4, w=matrix(1/4,nrow=11, ncol=11), fun=mean, na.rm=T)
 f.pfts$pft5  <- focal(pfts$pft5, w=matrix(1/5,nrow=11, ncol=11), fun=mean, na.rm=T)
@@ -69,10 +69,10 @@ f.pfts$pft6  <- focal(pfts$pft6, w=matrix(1/6,nrow=11, ncol=11), fun=mean, na.rm
 f.pfts$pft8  <- focal(pfts$pft8, w=matrix(1/8,nrow=11, ncol=11), fun=mean, na.rm=T)
 f.pfts$pft9  <- focal(pfts$pft9, w=matrix(1/9,nrow=11, ncol=11), fun=mean, na.rm=T)
 f.pfts$pft10 <- focal(pfts$pft10, w=matrix(1/10,nrow=11, ncol=11), fun=mean, na.rm=T)
-plot(f.pfts)
+# plot(f.pfts)
 
 # 2.3) relative the 0-1 scale
-rf.pfts <- stack(biom.raw)
+rf.pfts <- stack(biome.raw)
 projection(rf.pfts) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 rf.pfts$pft4 <- f.pfts$pft4/sum(f.pfts[[2:7]])
 rf.pfts$pft5 <- f.pfts$pft5/sum(f.pfts[[2:7]])
@@ -80,15 +80,15 @@ rf.pfts$pft6 <- f.pfts$pft6/sum(f.pfts[[2:7]])
 rf.pfts$pft8 <- f.pfts$pft8/sum(f.pfts[[2:7]])
 rf.pfts$pft9 <- f.pfts$pft9/sum(f.pfts[[2:7]])
 rf.pfts$pft10 <- f.pfts$pft10/sum(f.pfts[[2:7]])
-plot(rf.pfts)
+# plot(rf.pfts)
 
 # 3) crop raw data (extents need to be same before masking)
 biom.crop <- crop(rf.pfts, extent(paleon))
-plot(biom.crop[[1]])
-plot(biom.crop[[2:7]], zlim=c(0,1))
+# plot(biom.crop[[1]])
+# plot(biom.crop[[2:7]], zlim=c(0,1))
 
-plot(biom.crop[[1]])
-plot(paleon, add=T, alpha=0.8)
+# plot(biom.crop[[1]])
+# plot(paleon, add=T, alpha=0.8)
 
 # lets make sure everythign sums to 1
 check <- sum(biom.crop[[2:7]])
@@ -96,15 +96,15 @@ check
 
 # 4) Resample -- It would probably be okay to leave this out, but just in case...
 biom.resamp <- resample(biom.crop, paleon)
-plot(biom.resamp[[1]])
-plot(paleon, add=T, alpha=0.8)
+# plot(biom.resamp[[1]])
+# plot(paleon, add=T, alpha=0.8)
 
 # 5) mask raw data
 biom.mask <- mask(biom.resamp, paleon)
-plot(biom.mask[[1]])
-plot(paleon, add=T, alpha=0.8)
+# plot(biom.mask[[1]])
+# plot(paleon, add=T, alpha=0.8)
 
-plot(biom.mask[[2:7]])
+# plot(biom.mask[[2:7]])
 
 
 
@@ -121,13 +121,13 @@ pft.replace <- apply(pft.max, 1, function(x,...){pft.list[which(x == max(x))]})
 
 biom.final <- biom.mask
 biom.final$potential_veg_hd[biom.final$potential_veg_hd==0] <- pft.replace
-plot(biom.final[[1]])
-plot(biom.final[[2:7]])
-
+# plot(biom.final[[1]])
+# plot(biom.final[[2:7]])
 
 # 7) convert to format for .nc
-writeRaster(biom.final[[1]], file.path(biom.out, "biome_potential_vegtype_dominant.nc"), format="CDF", overwrite=T)
-writeRaster(biom.final[[2:7]], file.path(biom.out, "biome_potential_vegtype_relative.nc"), format="CDF", overwrite=T)
+# # Saving as an array so that all the proper variables names get written to netcdf
+writeRaster(biom.final[[1]], file.path(biom.out, "biome_potential_vegtype_dominant.nc"), format="CDF", overwrite=T, varname="potential_veg_dom", varunit="cateogrical", longname="Vegetation Type", zname="vegtype_names", zunit="cateogrical")
+writeRaster(biom.final[[2:7]], file.path(biom.out, "biome_potential_vegtype_relative.nc"), format="CDF", overwrite=T, varname="VegType_Fraction", varunit="fraction", longname="Vegetation Type", zname="Veg_Type")
 # ----------------------------------------------
 
 # ----------------------------------------------
