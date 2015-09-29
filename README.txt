@@ -93,11 +93,47 @@ There are 6 Environmental Drivers.
    — File Path/Name:
    — File Format:
    — Processing Script:
-   — File Description:
-   — Citation:
-   — Web Link:
-   — Date Accessed: 
-   — Additional Notes: 
+   — File Description: 
+   — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
+               Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
+               2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
+               Data set. Available on-line [http://daac.ornl.gov] from Oak Ridge National Laboratory 
+               Distributed Active Archive Center, Oak Ridge, Tennessee, USA. 
+               http://dx.doi.org/10.3334/ORNLDAAC/1220
+
+   — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
+   — Date Accessed: 29 September, 2015
+   — Additional Notes: MsTMIP Source: Unified North American Soil Database (UNASD) [U.S. General Soil 
+     Map (STATSGO2) + Soil Landscapes of Canada v3.2 and v2.2 + HWSD v1.1]; topsoil=0-30 cm depth, 
+     subsoil=30-100 cm depth; See highlighted section on page 18 of NACP_MsTMIP_Model_Driver.pdf in 
+     soil folder for more information.
+
+     Units & descriptions are as follows:
+     Soil Property    Description                            Units in UNASD
+      soil_code        soil mapping unit code                 code
+      ref_depth        reference soil depth                   code
+      roots            obstacles to roots (Europe only)       NA
+      il               impermeable layer (Europe only)        NA
+      t_cec_clay       topsoil CEC (clay)                     meq/100g
+      t_clay           topsoil clay fraction                  % weight
+      t_gravel         topsoil gravel content                 % volume
+      t_oc             topsoil organic carbon                 % weight
+      t_ph_h20         topsoil pH (H2O)                       -log(H+)
+      t_ref_bulk       topsoil bulk density                   g/cm3
+      t_sand           topsoil sand fraction                  % weight
+      t_silt           topsoil silt fraction                  % weight
+      t_usda_tex       topsoil USDA texture classification    name
+      s_cec_clay       subsoil CEC (clay)                     meq/100g
+      s_clay           subsoil clay fraction                  % weight
+      s_gravel         subsoil gravel content                 % volume
+      s_oc             subsoil organic carbon                 % weight
+      s_ph_h20         subsoil pH (H2O)                       -log(H+)
+      s_ref_bulk       subsoil bulk density                   g/cm3
+      s_sand           subsoil sand fraction                  % weight
+      s_silt           subsoil silt fraction                  % weight
+      s_usda_tex       subsoil USDA texture classification    name
+
+
 
 5) Biome
    — File Path/Name: biome/biome_potential_vegtype_dominant.nc; biome/biome_potential_vegtype_relative.nc
@@ -141,10 +177,14 @@ There are 6 Environmental Drivers.
    — File Path/Name:
    — File Format:
    — Processing Script:
-   — File Description:
-   — Citation:
-   — Web Link:
-   — Date Accessed: 
-   — Additional Notes: 
-
-More information on the drivers and their use can be found in the Phase 2 protocol.
+   — File Description: Units: mgN/m2/yr
+   — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
+               Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
+               2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
+               Data set. Available on-line [http://daac.ornl.gov] from Oak Ridge National Laboratory 
+               Distributed Active Archive Center, Oak Ridge, Tennessee, USA. 
+               http://dx.doi.org/10.3334/ORNLDAAC/1220
+   — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
+   — Date Accessed: 29 September, 2015
+   — Additional Notes: See highlighted section on page 16 of NACP_MsTMIP_Model_Driver.pdf in nitrogen 
+     folder for description of MsTMIP methods.
