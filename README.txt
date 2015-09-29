@@ -9,9 +9,19 @@ repository. All other users can obtain these data via links provided or drivers 
 data will be made available upon request.
 
 There are 6 Environmental Drivers.  
+
+All drivers have a consistent spatial extent, resolution, and coordinate reference system
+Spatial Extent (xmin, xmax, ymin, ymax) = -100, -60, 35, 50
+Spatial Resolution = 0.5 x 0.5 degree
+CRS (R format) = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
+
+See specific driver information for temporal extent and resolution
+
 1) Land Mask
    — File Path/Name: domain_mask/paleon_domain.nc
    — File Format: netcdf, dim=[lon,lat]
+   — Temporal Extent: static (one time)
+   - Temporal Resolution: static (one time)
    — Processing Scripts: 1_paleon_mask.R
    — File Description: This is a spatial file that all data (drivers & outputs) should 
      match spatial.  Resolution: 0.5-degree, bounding box (xmin, xmax, ymin, ymax): -100, -60, 35, 50
@@ -26,6 +36,8 @@ There are 6 Environmental Drivers.
 2) CO2
    — File Path/Name:
    — File Format:
+   — Temporal Extent: 
+   - Temporal Resolution: 
    — Processing Script:
    — File Description:
    — Citation:
@@ -36,6 +48,8 @@ There are 6 Environmental Drivers.
 3) Land-Use
    — File Path/Name:lulcc/paleon_lulcc_*.nc
    — File Format: netcdf, dim=[time,lat,lon]
+   — Temporal Extent: 1500-2005
+   - Temporal Resolution: annual
    — Processing Script: 3_lulcc.R
    — File Description:Spatial time series describing fractional land use types, fraction land use 
      transition, and harvest statistics (area, biomass).  These are modified Hurtt and differ greatly
@@ -92,6 +106,8 @@ There are 6 Environmental Drivers.
 4) Soil
    — File Path/Name:
    — File Format:
+   — Temporal Extent: static (one time)
+   - Temporal Resolution: static (one time)
    — Processing Script:
    — File Description: 
    — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
@@ -138,6 +154,8 @@ There are 6 Environmental Drivers.
 5) Biome
    — File Path/Name: biome/biome_potential_vegtype_dominant.nc; biome/biome_potential_vegtype_relative.nc
    — File Format: netcdf; dim=[PFT, lat, lon]
+   — Temporal Extent: static (one time)
+   - Temporal Resolution: static (one time)
    — Processing Script: 5_biome.R
    — File Description: This file contains the potential dominant vegetation type (*_dominant.nc) and 
      estimate fraction of each vegetation type (*_relative.nc) in a grid cell.  Fraction of each vegetation
@@ -176,6 +194,8 @@ There are 6 Environmental Drivers.
 6) Nitrogen Deposition
    — File Path/Name:
    — File Format:
+   — Temporal Extent: 1860-2010
+   - Temporal Resolution: annual
    — Processing Script:
    — File Description: Units: mgN/m2/yr
    — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
@@ -187,4 +207,6 @@ There are 6 Environmental Drivers.
    — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
    — Date Accessed: 29 September, 2015
    — Additional Notes: See highlighted section on page 16 of NACP_MsTMIP_Model_Driver.pdf in nitrogen 
-     folder for description of MsTMIP methods.
+     folder for description of MsTMIP methods.  Because there is no methodological difference between
+     quarter-degree North America data and half-degree global data, PalEON drivers were extracted from
+     the 0.5-degree native global product.
