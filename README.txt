@@ -8,7 +8,9 @@ raw data sets (pre-processing) can be found in the env_drivers_raw folder in thi
 repository. All other users can obtain these data via links provided or drivers and raw
 data will be made available upon request.
 
-There are 6 Environmental Drivers.  
+There are 6 Environmental Drivers.  File paths associated each driver are nested within
+the current version of env drivers.
+Current Env Driver: phase2_env_drivers_v1
 
 All drivers have a consistent spatial extent, resolution, and coordinate reference system
 Spatial Extent (xmin, xmax, ymin, ymax) = -100, -60, 35, 50
@@ -20,6 +22,7 @@ See specific driver information for temporal extent and resolution
 1) Land Mask
    — File Path/Name: domain_mask/paleon_domain.nc
    — File Format: netcdf, dim=[lon,lat]
+   — Units: binary (presence/absence)
    — Temporal Extent: static (one time)
    - Temporal Resolution: static (one time)
    — Processing Scripts: 1_paleon_mask.R
@@ -36,6 +39,7 @@ See specific driver information for temporal extent and resolution
 2) CO2
    — File Path/Name:
    — File Format:
+   — Units: variable (see “Additional Notes” below)
    — Temporal Extent: 
    - Temporal Resolution: 
    — Processing Script:
@@ -48,6 +52,7 @@ See specific driver information for temporal extent and resolution
 3) Land-Use
    — File Path/Name:lulcc/paleon_lulcc_*.nc
    — File Format: netcdf, dim=[time,lat,lon]
+   — Units: variable (see “Additional Notes” below)
    — Temporal Extent: 1500-2005
    - Temporal Resolution: annual
    — Processing Script: 3_lulcc.R
@@ -106,6 +111,7 @@ See specific driver information for temporal extent and resolution
 4) Soil
    — File Path/Name:
    — File Format:
+   — Units: variable (see “Additional Notes” below)
    — Temporal Extent: static (one time)
    - Temporal Resolution: static (one time)
    — Processing Script:
@@ -154,6 +160,7 @@ See specific driver information for temporal extent and resolution
 5) Biome
    — File Path/Name: biome/biome_potential_vegtype_dominant.nc; biome/biome_potential_vegtype_relative.nc
    — File Format: netcdf; dim=[PFT, lat, lon]
+   — Units: categorical
    — Temporal Extent: static (one time)
    - Temporal Resolution: static (one time)
    — Processing Script: 5_biome.R
@@ -192,12 +199,12 @@ See specific driver information for temporal extent and resolution
                    files)
 
 6) Nitrogen Deposition
-   — File Path/Name:
-   — File Format:
+   — File Path/Name: nitrogen/paleon_nhx.nc; nitrogen/paleon_noy.nc
+   — File Format: netcdf, dim=[time,lat,lon]
+   — Units: mgN/m2/yr
    — Temporal Extent: 1860-2010
    - Temporal Resolution: annual
-   — Processing Script:
-   — File Description: Units: mgN/m2/yr
+   — Processing Script: 6_nitrogen.R
    — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
                Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
                2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
