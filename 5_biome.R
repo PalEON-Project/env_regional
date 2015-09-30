@@ -23,9 +23,9 @@
 # ----------------------------------------------
 library(ncdf4); library(raster); library(rgdal)
 
-paleon.mask <- "~/Dropbox/PalEON CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
-biom.path <- "~/Dropbox/PalEON CR/env_regional/env_drivers_raw/biome/ISLSCP_II_POT_VEG_961/data/potential_veg_hd.asc"
-biom.out <- "~/Dropbox/PalEON CR/env_regional/env_paleon/biome"
+paleon.mask <- "~/Dropbox/PalEON_CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
+biom.path <- "~/Dropbox/PalEON_CR/env_regional/env_drivers_raw/biome/ISLSCP_II_POT_VEG_961/data/potential_veg_hd.asc"
+biom.out <- "~/Dropbox/PalEON_CR/env_regional/env_paleon/biome"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(biom.out)) dir.create(biom.out)

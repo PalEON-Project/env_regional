@@ -26,9 +26,9 @@
 # ----------------------------------------------
 library(ncdf4); library(raster); library(rgdal)
 
-paleon.mask <- "~/Dropbox/PalEON CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
-lulcc.path <- "~/Dropbox/PalEON CR/env_regional/env_drivers_raw/lulcc/LAND_USE_HARMONIZATION_V1/data/"
-lulcc.out <- "~/Dropbox/PalEON CR/env_regional/env_paleon/lulcc"
+paleon.mask <- "~/Dropbox/PalEON_CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
+lulcc.path <- "~/Dropbox/PalEON_CR/env_regional/env_drivers_raw/lulcc/LAND_USE_HARMONIZATION_V1/data/"
+lulcc.out <- "~/Dropbox/PalEON_CR/env_regional/env_paleon/lulcc"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(lulcc.out)) dir.create(lulcc.out)
