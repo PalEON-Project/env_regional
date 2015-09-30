@@ -25,7 +25,7 @@ paleon.mask <- "~/Desktop/Research/PalEON_CR/env_regional/env_paleon/domain_mask
 
 co2.bjorn  <- "~/Desktop/Research/PalEON_CR/env_regional/env_drivers_raw/co2/bjorn/paleon_co2_mix.nc"
 co2.mstmip <- "~/Desktop/Research/PalEON_CR/env_regional/env_drivers_raw/co2/NACP_MSTMIP_MODEL_DRIVER/data/mstmip_driver_global_hd_co2_v1.nc4"
-outpath    <- "~/Desktop/Research/PalEON_CR/env_regional/env_paleon/co2"
+outpath    <- "~/Desktop/Research/PalEON_CR/env_regional/env_paleon/co2/"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(soil.out)) dir.create(soil.out)

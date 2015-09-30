@@ -37,17 +37,28 @@ See specific driver information for temporal extent and resolution
      in the east and along the upper peninsula of Michigan.
 
 2) CO2
-   — File Path/Name:
-   — File Format:
-   — Units: variable (see “Additional Notes” below)
-   — Temporal Extent: 
-   - Temporal Resolution: 
-   — Processing Script:
-   — File Description:
-   — Citation:
-   — Web Link:
-   — Date Accessed: 
-   — Additional Notes: 
+   — File Path/Name: co2/paleon_*_co2.nc
+   — File Format: netcdf, dim=[time]
+   — Units: ppm
+   — Temporal Extent: 850-2010
+   - Temporal Resolution: annual, monthly
+   — Processing Script: 2_seasonal_co2.R
+   — File Description: This file provides the CO2 concentration for the entire PalEON domain.  The 
+     entire domain uses the same CO2 concentration.  Two options exist: 1) 1 value per year (original 
+     splicing by Bjorn Brooks in 2013; 2) monthly CO2 with variation added in from MsTMIP.
+   — Citation: Original CO2: PMIP-3, NOAA Mona Loa Observatory (MLO)
+
+               MsTMIP Seasonal Variability
+               Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
+               Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
+               2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
+               Data set. Available on-line [http://daac.ornl.gov] from Oak Ridge National Laboratory 
+               Distributed Active Archive Center, Oak Ridge, Tennessee, USA. 
+               http://dx.doi.org/10.3334/ORNLDAAC/1220
+   — Web Link: MsTMIP: http://dx.doi.org/10.3334/ORNLDAAC/1220
+   — Date Accessed: MsTMIP: 30 September, 2015
+   — Additional Notes: We did not redo original script by Bjorn Brooks that spliced PMIP-3 and NOAA
+     MLO data nor replace PMIP-3 with CMIP CO2.  
 
 3) Land-Use
    — File Path/Name:lulcc/paleon_lulcc_*.nc
@@ -124,7 +135,6 @@ See specific driver information for temporal extent and resolution
                Data set. Available on-line [http://daac.ornl.gov] from Oak Ridge National Laboratory 
                Distributed Active Archive Center, Oak Ridge, Tennessee, USA. 
                http://dx.doi.org/10.3334/ORNLDAAC/1220
-
    — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
    — Date Accessed: 29 September, 2015
    — Additional Notes: PalEON soil drivers were aggregated up from MsTMIP drivers for North America. In
