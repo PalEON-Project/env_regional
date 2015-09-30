@@ -6,3 +6,5 @@ env_paleon/
 *.history
 
 *.gif
+
+.Rhistory
