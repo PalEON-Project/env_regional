@@ -21,7 +21,7 @@ See specific driver information for temporal extent and resolution
 
 1) Land Mask
    — File Path/Name: domain_mask/paleon_domain.nc
-   — File Format: netcdf, dim=[lon,lat]
+   — File Format: netcdf, dim=[lat,lon]
    — Units: binary (presence/absence)
    — Temporal Extent: static (one time)
    - Temporal Resolution: static (one time)
@@ -109,13 +109,15 @@ See specific driver information for temporal extent and resolution
        gflvu   transition from primary land to urban land
 
 4) Soil
-   — File Path/Name:
-   — File Format:
+   — File Path/Name: soil/paleon_soil.nc (all variables), soil/paleon_soil_*.nc (individual files)
+   — File Format: netcdf dim=[lat,lon]
    — Units: variable (see “Additional Notes” below)
    — Temporal Extent: static (one time)
    - Temporal Resolution: static (one time)
-   — Processing Script:
-   — File Description: 
+   — Processing Script: 4_soil.R
+   — File Description: There are two file options for soil drivers:  1) single .nc file that mirror
+     the format of the MsTMIP driver; 2) individual .nc files for each driver.  The data in these
+     formats are identical.
    — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
                Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
                2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
@@ -125,10 +127,13 @@ See specific driver information for temporal extent and resolution
 
    — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
    — Date Accessed: 29 September, 2015
-   — Additional Notes: MsTMIP Source: Unified North American Soil Database (UNASD) [U.S. General Soil 
-     Map (STATSGO2) + Soil Landscapes of Canada v3.2 and v2.2 + HWSD v1.1]; topsoil=0-30 cm depth, 
-     subsoil=30-100 cm depth; See highlighted section on page 18 of NACP_MsTMIP_Model_Driver.pdf in 
-     soil folder for more information.
+   — Additional Notes: PalEON soil drivers were aggregated up from MsTMIP drivers for North America. In
+     the process of aggregating from quarter to half-degree resolution, we had a few cells that were 
+     missing in MsTMIP and which were filled with the mean of the surrounding adjacent cells.
+     MsTMIP data source: Unified North American Soil Database (UNASD) [U.S. General Soil Map (STATSGO2) 
+     + Soil Landscapes of Canada v3.2 and v2.2 + HWSD v1.1]; topsoil=0-30 cm depth, subsoil=30-100 cm 
+     depth; See highlighted section on page 18 of NACP_MsTMIP_Model_Driver.pdf in soil folder for more 
+     information.
 
      Units & descriptions are as follows:
      Soil Property    Description                            Units in UNASD
@@ -205,6 +210,7 @@ See specific driver information for temporal extent and resolution
    — Temporal Extent: 1860-2010
    - Temporal Resolution: annual
    — Processing Script: 6_nitrogen.R
+   — File Description: Annual nitrogen inputs from spatially extracted from the MsTMIP drivers.
    — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
                Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
                2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
