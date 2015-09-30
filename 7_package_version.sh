@@ -7,8 +7,7 @@ dir_in="env_paleon"
 dir_out="phase2_env_drivers_v1"
 
 
-# drivers=(domain_mask co2 lulcc soil biome nitrogen)
-drivers=(domain_mask lulcc soil biome nitrogen)
+drivers=(domain_mask co2 lulcc soil biome nitrogen)
 
 mkdir -p ${dir_out}
 
