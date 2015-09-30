@@ -1,7 +1,7 @@
 # ----------------------------------------------
 # Script to extract 
 # Christine Rollinson, crollinson@gmail.com
-# Original: 28 September, 2015
+# Original: 29 September, 2015
 #
 # --------------
 # Mask Proceedure (loop over each file)
@@ -25,9 +25,9 @@
 # ----------------------------------------------
 library(ncdf4); library(raster); library(rgdal)
 
-paleon.mask <- "~/Dropbox/PalEON CR/env_regional/phase2_env_drivers_v1/domain_mask/paleon_domain.nc"
+paleon.mask <- "~/Dropbox/PalEON CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
 nitrogen.path <- "~/Dropbox/PalEON CR/env_regional/env_drivers_raw/nitrogen/NACP_MSTMIP_MODEL_DRIVER/data/"
-nitrogen.out <- "~/Dropbox/PalEON CR/env_regional/phase2_env_drivers_v1/nitrogen"
+nitrogen.out <- "~/Dropbox/PalEON CR/env_regional/env_paleon/nitrogen"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(nitrogen.out)) dir.create(nitrogen.out)

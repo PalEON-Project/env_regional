@@ -27,9 +27,9 @@
 # ----------------------------------------------
 library(ncdf4); library(raster); library(rgdal)
 
-paleon.mask <- "~/Desktop/Research/PalEON CR/env_regional/phase2_env_drivers_v1/domain_mask/paleon_domain.nc"
+paleon.mask <- "~/Desktop/Research/PalEON CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
 soil.path <- "~/Desktop/Research/PalEON CR/env_regional/env_drivers_raw/soil/NACP_MSTMIP_MODEL_DRIVER/data/mstmip_driver_na_qd_soil_v1.nc4"
-soil.out <- "~/Desktop/Research/PalEON CR/env_regional/phase2_env_drivers_v1/soil"
+soil.out <- "~/Desktop/Research/PalEON CR/env_regional/env_paleon/soil"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(soil.out)) dir.create(soil.out)

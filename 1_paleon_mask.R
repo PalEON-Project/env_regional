@@ -29,7 +29,7 @@
 library(ncdf4)
 # dir.met <- "/projectnb/dietzelab/paleon/met_regional/phase2_met_drivers.v1/precipf/precipf_0850_01_01.nc"
 path.met <- "/projectnb/dietzelab/paleon/met_regional/bias_corr/corr_timestamp_v2/precipf/precipf_0850_01.nc" # temporary until all qa/qc is done
-path.env <- "/projectnb/dietzelab/paleon/env_regional/phase2_env_drivers_v1/domain_mask"
+path.env <- "/projectnb/dietzelab/paleon/env_regional/env_paleon/domain_mask"
 env.name <- "paleon_domain.nc"
 
 # Create the driver folder if it doesn't already exist
