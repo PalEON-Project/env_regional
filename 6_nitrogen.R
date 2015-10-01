@@ -9,7 +9,8 @@
 # 1) Open raw nitrogen files
 # 2) Crop to paleon domain extent
 # 3) Mask to make sure we have consistent land/water coverage
-# 4) Convert to .nc file for consistent convention
+# 4) Fill to 850 by using 1860 as pre-industrialized background N-deposition rates
+# 5) Convert to .nc file for consistent convention
 #
 # NOTE: We're going to maintain the original file structure for
 #       what we're distributing, but I'll also write a set of 
@@ -56,7 +57,7 @@ nhx.unit     <- nhx.nc$var[[5]]$units
 # nhx.lat      <- ncvar_get(nhx.nc, "lat")
 # nhx.lon      <- ncvar_get(nhx.nc, "lon")
 # nhx.dat      <- ncvar_get(nhx.nc, nhx.name)[,,which(nitrogen.years<=2010)]
-dim(nhx.dat) # dim=c(lon, lat, time)
+# dim(nhx.dat) # dim=c(lon, lat, time)
 
 noy.name     <- noy.nc$var[[5]]$name
 noy.longname <- noy.nc$var[[5]]$longname
@@ -64,7 +65,7 @@ noy.unit     <- noy.nc$var[[5]]$units
 # noy.lat      <- ncvar_get(noy.nc, "lat")
 # noy.lon      <- ncvar_get(noy.nc, "lon")
 # noy.dat      <- ncvar_get(noy.nc, nhx.name)[,,which(nitrogen.years<=2010)]
-dim(noy.dat) # dim=c(lon, lat, time)
+# dim(noy.dat) # dim=c(lon, lat, time)
 
 nc_close(nhx.nc); nc_close(noy.nc)
 
@@ -89,6 +90,8 @@ noy.crop <- crop(noy.raw, extent(paleon))
 # 3) mask raw data
 nhx.mask <- mask(nhx.crop, paleon)
 noy.mask <- mask(noy.crop, paleon)
+names(nhx.mask) <- substr(names(nhx.mask), 1, 5)
+names(noy.mask) <- substr(names(noy.mask), 1, 5)
 # plot(nhx.mask[[1]])
 # plot(paleon, add=T, alpha=0.4)
 # plot(nhx.mask[[1:6]])
@@ -97,9 +100,36 @@ noy.mask <- mask(noy.crop, paleon)
 # plot(paleon, add=T, alpha=0.3)
 # plot(noy.mask[[1:6]])
 
-# 6) save as netcdf
-writeRaster(nhx.mask, file.path(nitrogen.out, "paleon_nhx.nc"), format="CDF", overwrite=T, varname=nhx.name, varunit=nhx.unit, longname=nhx.longname, zname="time", zunit="years since 1860")
-writeRaster(noy.mask, file.path(nitrogen.out, "paleon_noy.nc"), format="CDF", overwrite=T, varname=noy.name, varunit=noy.unit, longname=noy.longname, zname="time", zunit="years since 1860")
+# 4) fill 850:1859 with 1860 N-deposition value
+
+# 4.1) Create an emtpy brick that will get filled with the 1860 values
+nhx.final <- noy.final <- brick(ncols=ncol(nhx.mask), nrows=nrow(nhx.mask), nl=length(850:1859), 
+                          xmn=xmin(nhx.mask), xmx=xmax(nhx.mask), ymn=ymin(nhx.mask), ymx=ymax(nhx.mask), 
+                          crs=projection(nhx.mask))
+names(nhx.final) <- names(noy.final) <- paste0("X", 850:1859)
+nhx.final <- setValues(nhx.final, values(nhx.mask[[1]]))
+noy.final <- setValues(noy.final, values(nhx.mask[[1]]))
+
+# 4.2) Stack the pre-N deposition file & the MsTMIP N-deposition
+nhx.final <- stack(nhx.final, nhx.mask)
+noy.final <- stack(noy.final, noy.mask)
+
+nhx.final[[1:10]]
+nhx.final[[(nlayers(nhx.final)-10):nlayers(nhx.final)]]
+par(mfrow=c(2,1))
+plot(nhx.final[[1]], main=names(nhx.final[[1]]), zlim=range(values(nhx.final), na.rm=T))
+plot(nhx.final[[1161]], main=names(nhx.final[[1161]]), zlim=range(values(nhx.final), na.rm=T))
+
+noy.final[[1:10]]
+noy.final[[(nlayers(noy.final)-10):nlayers(noy.final)]]
+par(mfrow=c(2,1))
+plot(noy.final[[1]], main=names(noy.final[[1]]), zlim=range(values(noy.final), na.rm=T))
+plot(noy.final[[1161]], main=names(noy.final[[1161]]), zlim=range(values(noy.final), na.rm=T))
+
+
+# 5) save as netcdf
+writeRaster(nhx.final, file.path(nitrogen.out, "paleon_nhx.nc"), format="CDF", overwrite=T, varname=nhx.name, varunit=nhx.unit, longname=nhx.longname, zname="time", zunit="years since 0850")
+writeRaster(noy.final, file.path(nitrogen.out, "paleon_noy.nc"), format="CDF", overwrite=T, varname=noy.name, varunit=noy.unit, longname=noy.longname, zname="time", zunit="years since 0850")
 # ----------------------------------------------
 
 # ----------------------------------------------
@@ -124,29 +154,33 @@ paleon.states <- map_data("state")
 nhx <- stack(file.path(nitrogen.out, "paleon_nhx.nc"))
 noy <- stack(file.path(nitrogen.out, "paleon_noy.nc"))
 
-plot(nhx[[1:6]])
-plot(noy[[1:6]])
+# plot(nhx[[1:6]])
+# plot(noy[[1:6]])
 
 # Convert each layer to a dataframe
 # Extract just the lat/lon
-lat.lon <- data.frame(rasterToPoints(gcrop))[,1:2]
+lat.lon <- data.frame(rasterToPoints(nhx))[,1:2]
 names(lat.lon)     <- c("lon", "lat")
 
 # Extract the N deposition data & code in years
 nhx.df <- stack(data.frame(rasterToPoints(nhx))[,3:(nlayers(nhx)+2)])
 noy.df <- stack(data.frame(rasterToPoints(noy))[,3:(nlayers(noy)+2)])
-years <- as.numeric(substr(nhx.df[,2],2,nchar(as.vector(nhx.df[,2]))))-1+1860
+years <- as.numeric(substr(nhx.df[,2],2,nchar(as.vector(nhx.df[,2]))))-1+850
 
 # Making a single Nitrogen deposition data frame
 nitrogen <- data.frame(lon=lat.lon$lon, lat=lat.lon$lat, year=years, nhx=nhx.df[,1], noy=noy.df[,1])
 nitrogen$Total <- nitrogen$nhx + nitrogen$noy
 summary(nitrogen)
 
+# Looking at pre-industrial levels & 2010 levels
+summary(nitrogen[nitrogen$year==1860,]) # Range nhx =  3 -  534; noy =  27 -  107
+summary(nitrogen[nitrogen$year==2010,]) # Range nhx = 21 - 1168; noy = 100 - 1497
+
 # -----------------------
 # 1) Total N Deposition
 # -----------------------
 saveGIF(
-for(i in min(nitrogen$year):max(nitrogen$year)){
+for(i in 1800:max(nitrogen$year)){
 # for(i in 2000:2005){
 print(paste0("Graphing Year : ", i))
 print(
@@ -155,7 +189,7 @@ ggplot(data= nitrogen[nitrogen$year==i,]) +
     geom_path(data=paleon.states, aes(x=long, y=lat, group=group)) +
     scale_x_continuous(limits=range(nitrogen$lon), expand=c(0,0), name="Longitude (degrees)") +
     scale_y_continuous(limits=range(nitrogen$lat), expand=c(0,0), name="Latitude (degrees)") +
-    scale_fill_gradientn(colours=c("gray50", "blue2"), name="MgN/m2/yr", limits=range(nitrogen$Total)) +
+    scale_fill_gradientn(colours=c("gray50", "blue2"), name="mgN/m2/yr", limits=range(nitrogen$Total)) +
     ggtitle(paste0("Total N Deposition : ", i)) +
     coord_equal(ratio=1) +
 	theme(legend.position="bottom") +
@@ -168,14 +202,14 @@ ggplot(data= nitrogen[nitrogen$year==i,]) +
 )
 # }, movie.name=file.path(nitrogen.out,"NitrogenDeposition_Total_1860-2010.gif"), interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)
 # Note: Locally, movie.name doesn't like file.path, so use this setting
-}, movie.name="NitrogenDeposition_Total_1860-2010.gif", interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)# dev.off()
+}, movie.name="NitrogenDeposition_Total_1800-2010.gif", interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)# dev.off()
 # -----------------------
 
 # -----------------------
 # 2) NHx Deposition
 # -----------------------
 saveGIF(
-for(i in min(nitrogen$year):max(nitrogen$year)){
+for(i in 1800:max(nitrogen$year)){
 # for(i in 2000:2005){
 print(paste0("Graphing Year : ", i))
 print(
@@ -184,7 +218,7 @@ ggplot(data= nitrogen[nitrogen$year==i,]) +
     geom_path(data=paleon.states, aes(x=long, y=lat, group=group)) +
     scale_x_continuous(limits=range(nitrogen$lon), expand=c(0,0), name="Longitude (degrees)") +
     scale_y_continuous(limits=range(nitrogen$lat), expand=c(0,0), name="Latitude (degrees)") +
-    scale_fill_gradientn(colours=c("gray50", "blue2"), name="MgN/m2/yr", limits=range(nitrogen$nhx)) +
+    scale_fill_gradientn(colours=c("gray50", "blue2"), name="mgN/m2/yr", limits=range(nitrogen$nhx)) +
     ggtitle(paste0("NHx Deposition : ", i)) +
     coord_equal(ratio=1) +
 	theme(legend.position="bottom") +
@@ -197,14 +231,14 @@ ggplot(data= nitrogen[nitrogen$year==i,]) +
 )
 # }, movie.name=file.path(nitrogen.out,"NitrogenDeposition_NHx_1860-2010.gif"), interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)
 # Note: Locally, movie.name doesn't like file.path, so use this setting
-}, movie.name="NitrogenDeposition_NHx_1860-2010.gif", interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)# dev.off()
+}, movie.name="NitrogenDeposition_NHx_1800-2010.gif", interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)# dev.off()
 # -----------------------
 
 # -----------------------
 # 3) NOy Deposition
 # -----------------------
 saveGIF(
-for(i in min(nitrogen$year):max(nitrogen$year)){
+for(i in 1800:max(nitrogen$year)){
 # for(i in 2000:2005){
 print(paste0("Graphing Year : ", i))
 print(
@@ -213,7 +247,7 @@ ggplot(data= nitrogen[nitrogen$year==i,]) +
     geom_path(data=paleon.states, aes(x=long, y=lat, group=group)) +
     scale_x_continuous(limits=range(nitrogen$lon), expand=c(0,0), name="Longitude (degrees)") +
     scale_y_continuous(limits=range(nitrogen$lat), expand=c(0,0), name="Latitude (degrees)") +
-    scale_fill_gradientn(colours=c("gray50", "blue2"), name="MgN/m2/yr", limits=range(nitrogen$noy)) +
+    scale_fill_gradientn(colours=c("gray50", "blue2"), name="mgN/m2/yr", limits=range(nitrogen$noy)) +
     ggtitle(paste0("NHx Deposition : ", i)) +
     coord_equal(ratio=1) +
 	theme(legend.position="bottom") +
@@ -226,7 +260,7 @@ ggplot(data= nitrogen[nitrogen$year==i,]) +
 )
 # }, movie.name=file.path(nitrogen.out,"NitrogenDeposition_NOy_1860-2010..gif"), interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)
 # Note: Locally, movie.name doesn't like file.path, so use this setting
-}, movie.name="NitrogenDeposition_NOy_1860-2010.gif", interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)# dev.off()
+}, movie.name="NitrogenDeposition_NOy_1800-2010.gif", interval=0.3, nmax=10000, autobrowse=F, autoplay=F, ani.height=600, ani.width=800)# dev.off()
 # -----------------------
 # ----------------------------------------------
 
