@@ -8,3 +8,7 @@ env_paleon/
 *.gif
 
 .Rhistory
+
+*.png
+
+*.pdf
