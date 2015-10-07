@@ -182,7 +182,7 @@ See specific driver information for temporal extent and resolution
 
 
 5) Biome
-   — File Path/Name: biome/biome_potential_vegtype_dominant.nc; biome/biome_potential_vegtype_relative.nc
+   — File Path/Name: biome/biome_potential_vegtype_biome.nc; biome/biome_potential_vegtype_pft_fraction.nc
    — File Format: netcdf; dim=[PFT, lat, lon]
    — Units: categorical
    — Temporal Extent: static (one time)
@@ -192,36 +192,42 @@ See specific driver information for temporal extent and resolution
    — File Description: This file contains the potential dominant vegetation type (*_dominant.nc) and 
      estimate fraction of each vegetation type (*_relative.nc) in a grid cell.  Fraction of each vegetation
      type in a grid cell was estimated using a 5 x 5 degree smoothing.
-   — Citation: Ramankutty, N. and J.A. Foley. 2010. ISLSCP II Potential Natural Vegetation Cover. 
-               In Hall, Forest G., G. Collatz, B. Meeson, S. Los, E. Brown de Colstoun, and D. 
-               Landis (eds.). ISLSCP Initiative II Collection. Data set. Available on-line 
-               [http://daac.ornl.gov/] from Oak Ridge National Laboratory Distributed Active Archive 
-               Center, Oak Ridge, Tennessee, U.S.A. doi:10.3334/ORNLDAAC/961
-   — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/961 (http://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=961)
-   — Date Accessed: 17 September, 2015
-   — Additional Notes: We are using the half-degree “potential_veg” product (not potential_veg_diffs)
-     Codes & Biome Types are as follows: (taken from 0_potential_veg_readme.txt)
-       Class #     Biome Type
-       -------     ----------
-          0        Water Bodies (Water bodies OR missing data for
-                   "potential_veg_diffs_XX.asc" files)
-          1        Tropical Evergreen Forest/Woodland
-          2        Tropical Deciduous Forest/Woodland
-          3        Temperate Broadleaf Evergreen Forest/Woodland
-          4        Temperate Needleleaf Evergreen Forest/Woodland
-          5        Temperate Deciduous Forest/Woodland
-          6        Boreal Evergreen Forest/Woodland
-          7        Boreal Deciduous Forest/Woodland
-          8        Mixed Forest
-          9        Savanna
-         10        Grassland/Steppe
-         11        Dense Shrubland
-         12        Open Shrubland
-         13        Tundra
-         14        Desert
-         15        Polar desert/Rock/Ice
-         16        No Data over Land (not included in "potential_veg_diffs_XX.asc" 
-                   files)
+   — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
+               Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
+               2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
+               Data set. Available on-line [http://daac.ornl.gov] from Oak Ridge National Laboratory 
+               Distributed Active Archive Center, Oak Ridge, Tennessee, USA. 
+               http://dx.doi.org/10.3334/ORNLDAAC/1220
+
+               SYNMAP
+               Jung, M., Henkel, K., Herold, M., and Churkina, G. 2006. Exploiting synergies of global land 
+               cover products for carbon cycle modeling. Remote Sens. Environ. 101: 534-553. 
+               DOI:10.1016/j.rse.2006.01.020
+   — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
+   — Date Accessed: 28 September, 2015
+   — Additional Notes: PalEON biome driver is derived from SYNMAP (Jung et al. 2006) which is used by 
+     MsTMIP.  We then translated the 33 SYNMAP biomes present in the PalEON domain to PFT specifications 
+     based on what CLM & SiBCASA use.  Original PFT crosswalk was done by K. Schaefer & modified for PalEON
+     by C. Rollinson.
+
+     Biome Classifications
+     Code    Description                                          SYNMAP CODES   
+      1         Broadleaf-Deciduous Forest                        5
+      2         Mixed Broadleaf-Deciduous & Needleleaf-Evergreen  6, 9
+      3         Needleleaf-Evergreen Forest                       1, 19
+      4         Savanna & Shrublands                              10, 14, 23, 27, 37, 38, 40
+      5         Grasslands                                        31, 32, 33, 36, 39, 41, 42, 44, 47
+
+     PFT Classifications
+     Code    Form     Leaf       Phenology
+      1      Tree     Needle     Evergreen
+      2      Tree     Needle     Deciduous
+      3      Tree     Broad      Evergreen
+      4      Tree     Broad      Deciduous
+      5      Shrub      -            -
+      6      Grass      -            - 
+
+
 
 6) Nitrogen Deposition
    — File Path/Name: nitrogen/paleon_nhx.nc; nitrogen/paleon_noy.nc

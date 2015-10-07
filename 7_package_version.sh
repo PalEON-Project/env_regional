@@ -4,7 +4,7 @@ cd ~/Desktop/Research/PalEON_CR/env_regional/
 
 # Script transfers & packages environmental drivers into new version
 dir_in="env_paleon"
-dir_out="phase2_env_drivers_v1"
+dir_out="phase2_env_drivers_v2"
 
 
 drivers=(domain_mask co2 lulcc soil biome nitrogen)
