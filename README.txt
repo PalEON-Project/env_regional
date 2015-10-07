@@ -64,7 +64,7 @@ See specific driver information for temporal extent and resolution
    — File Path/Name:lulcc/paleon_lulcc_*.nc
    — File Format: netcdf, dim=[time,lat,lon]
    — Units: variable (see “Additional Notes” below)
-   — Temporal Extent: 1500-2005
+   — Temporal Extent: 0850-2010 (PalEON filled, native extent = 1500-2005)
    - Temporal Resolution: annual
    — Processing Script: 3_lulcc.R
    — File Description:Spatial time series describing fractional land use types, fraction land use 
@@ -77,8 +77,17 @@ See specific driver information for temporal extent and resolution
    — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1248
    — Date Accessed: 28 September, 2015
    — Additional Notes: PalEON drivers are from LUHa.v1 files only, which are 1500-2005, with no urban 
-     land. Raw files are provided in a format similar to the original.  Utility scripts will be generated
-     to help reformat drivers for particular models. 
+     land.  LULCC was filled to the PalEON temporal domain according to the following scheme:
+     1) 0850 - 1499: All land in primary vegetation cover,  no disturbances or land use transitions
+        This is essentially assuming no significant human influence prior to 1500.  For models relying
+        on the land cover portion, this may lead to abrupt transition to crops in the Ohio River Valley
+        and could cause issues since we did not calculate the area moving from primary forest to cropland.
+        If this is an issue, please let us know and we’ll fix it.
+     2) 2005 - 2010: No more land cover transitions or harvest; land use designation stays as it was in 
+        2005 (secondary land will keep aging).
+                      
+     Raw files are provided in a format similar to the original.  Utility scripts will be generated to help
+     reformat drivers for particular models. 
 
      Variable codes are as follows:
      Variable	Description
@@ -178,7 +187,8 @@ See specific driver information for temporal extent and resolution
    — Units: categorical
    — Temporal Extent: static (one time)
    - Temporal Resolution: static (one time)
-   — Processing Script: 5_biome.R
+   — Processing Script: 5_biome.R (see 5_biome_comparison.R for some ugly script deciding whether to use
+     SYNMAP (MsTMIP) or Ramankutty & Foley (PalEON original))
    — File Description: This file contains the potential dominant vegetation type (*_dominant.nc) and 
      estimate fraction of each vegetation type (*_relative.nc) in a grid cell.  Fraction of each vegetation
      type in a grid cell was estimated using a 5 x 5 degree smoothing.
@@ -217,7 +227,7 @@ See specific driver information for temporal extent and resolution
    — File Path/Name: nitrogen/paleon_nhx.nc; nitrogen/paleon_noy.nc
    — File Format: netcdf, dim=[time,lat,lon]
    — Units: mgN/m2/yr
-   — Temporal Extent: 1860-2010
+   — Temporal Extent: 0850-2010 (PalEON filled, native extent = 1860-2010)
    - Temporal Resolution: annual
    — Processing Script: 6_nitrogen.R
    — File Description: Annual nitrogen inputs from spatially extracted from the MsTMIP drivers.
@@ -233,3 +243,6 @@ See specific driver information for temporal extent and resolution
      folder for description of MsTMIP methods.  Because there is no methodological difference between
      quarter-degree North America data and half-degree global data, PalEON drivers were extracted from
      the 0.5-degree native global product.
+     
+     Temporal Gapfilling Protocol: Assume 1860 is indicative of background N deposition rates.  850 - 
+     1859 receive the 1860 N deposition rates.
