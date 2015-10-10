@@ -230,13 +230,17 @@ See specific driver information for temporal extent and resolution
       5         Grasslands                                        31, 32, 33, 36, 39, 41, 42, 44, 47
 
      PFT Classifications
-     Code    Form     Leaf       Phenology
-      1      Tree     Needle     Evergreen
-      2      Tree     Needle     Deciduous
-      3      Tree     Broad      Evergreen
-      4      Tree     Broad      Deciduous
-      5      Shrub      -            -
-      6      Grass      -            - 
+     PFT   Code    Form     Leaf       Phenology
+      1    TBrEv   Tree     Broad      Evergreen
+      2    TBrDe   Tree     Broad      Deciduous
+      3    TNeEv   Tree     Needle     Evergreen
+      4    TNeDe   Tree     Needle     Deciduous
+      5    SBrEv   Shrub    Broad      Evergreen
+      6    SBrDe   Shrub    Broad      Deciduous
+      7    SNeEv   Shrub    Needle     Evergreen
+      8    SNeDe   Shrub    Needle     Deciduous
+      9    Grass   Grass      -            - 
+     10    Bare    Bare       -            - 
 
 
 
