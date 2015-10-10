@@ -12,3 +12,7 @@ env_paleon/
 *.png
 
 *.pdf
+
+*.xlsx
+
+Synmap_Crosswalk.xlsx

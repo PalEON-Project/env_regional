@@ -189,9 +189,10 @@ See specific driver information for temporal extent and resolution
    - Temporal Resolution: static (one time)
    — Processing Script: 5_biome.R (see 5_biome_comparison.R for some ugly script deciding whether to use
      SYNMAP (MsTMIP) or Ramankutty & Foley (PalEON original))
-   — File Description: This file contains the potential dominant vegetation type (*_dominant.nc) and 
-     estimate fraction of each vegetation type (*_relative.nc) in a grid cell.  Fraction of each vegetation
-     type in a grid cell was estimated using a 5 x 5 degree smoothing.
+   — File Description: This file contains the dominant biome type (biome_potential_vegtype_biome.nc) and 
+     estimated corresponding fraction of common model plant functional types (*_pft_fraction.nc) in each 
+     grid cell. Original biome classification is from SYNMAP (MsTMIP biome driver). see additional notes
+     for details on biome & PFT translation for PalEON.
    — Citation: Wei, Y., S. Liu, D.N. Huntzinger, A.M. Michalak, N. Viovy, W.M. Post, C.R. Schwalm, K. 
                Schaefer, A.R. Jacobson, C. Lu, H. Tian, D.M. Ricciuto, R.B. Cook, J. Mao, and X. Shi. 
                2014. NACP MsTMIP: Global and North American Driver Data for Multi-Model Intercomparison. 
@@ -203,12 +204,22 @@ See specific driver information for temporal extent and resolution
                Jung, M., Henkel, K., Herold, M., and Churkina, G. 2006. Exploiting synergies of global land 
                cover products for carbon cycle modeling. Remote Sens. Environ. 101: 534-553. 
                DOI:10.1016/j.rse.2006.01.020
+
+               Biome Crosswalk
+               Poulter, B. N. MacBean. A. Hartley, I Khlystova, O. Arino, R. Betts, S. Bontemps, M. Boettcher,
+               C. Brockmann, P. Defourny, S. Hagemann, M. Herold, G. Kirches, C. Lamarche, D. Lederer, C. 
+               Ottle, M. Peters, and P. Peylin. 2015. Plant functional type classification for earth system 
+               models: results from the European Space Agency’s Land Cover Climate Change Initiative.  
+               Geoscientific Model Development 8: 2315-2328. doi:10.5194/gmd-8-2315-2015
    — Web Link: http://dx.doi.org/10.3334/ORNLDAAC/1220
    — Date Accessed: 28 September, 2015
    — Additional Notes: PalEON biome driver is derived from SYNMAP (Jung et al. 2006) which is used by 
-     MsTMIP.  We then translated the 33 SYNMAP biomes present in the PalEON domain to PFT specifications 
-     based on what CLM & SiBCASA use.  Original PFT crosswalk was done by K. Schaefer & modified for PalEON
-     by C. Rollinson.
+     MsTMIP.  Crosswalk between SYNMAP and PalEON/model biomes generally followed previous work by K. Schaefer
+     for SibCASA.  SYNMAP-PFT crosswalk was modified from Poulter et al. 2015.  In both cases, crops were 
+     equated with grassland and urban area ignored. Mosaic tree-shrub or tree-grass/crop were treated as the 
+     corresponding LCCS “open” forest types (<15% forest cover) treating shrub and grass as equivalent.  
+     Current product keeps the bare ground cover, and models that do not have bare ground should reallocate 
+     that proportion accordingly.
 
      Biome Classifications
      Code    Description                                          SYNMAP CODES   

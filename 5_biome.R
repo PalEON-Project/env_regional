@@ -25,9 +25,10 @@
 library(ncdf4); library(raster); library(rgdal)
 library(car)
 
-paleon.mask <- "~/Dropbox/PalEON_CR/env_regional/env_paleon/domain_mask/paleon_domain.nc"
-biom.path <- "~/Dropbox/PalEON_CR/env_regional/env_drivers_raw/biome/NACP_MSTMIP_MODEL_DRIVER/data"
-biom.out <- "~/Dropbox/PalEON_CR/env_regional/env_paleon/biome"
+setwd("~/Desktop/Research/PalEON_CR/env_regional/")
+paleon.mask <- "env_paleon/domain_mask/paleon_domain.nc"
+biom.path <- "env_drivers_raw/biome/NACP_MSTMIP_MODEL_DRIVER/data"
+biom.out <- "env_paleon/biome"
 
 # Create the driver folder if it doesn't already exist
 if(!dir.exists(biom.out)) dir.create(biom.out)
@@ -119,6 +120,8 @@ frac.biome  <- dropLayer(frac.biome,1)
 # plot(paleon, add=T, alpha=0.4)
 
 # 8) Reclassify SYNMAP codes into ones that make sense for PalEON
+# 8a) Biome Reclassificaiton following Kevin Schaefer's Crosswalk for SibCASA
+# 8b) PFT Crosswalk following Poulter et al 2015.
 
 # --------------------
 # 8a) recoding the SYNMAP Biomes to PalEON (See Synmap_Crosswalk.xlsx for more details)
@@ -145,35 +148,82 @@ plot(paleon.biome)
 # --------------------
 
 # --------------------
-# 8b) Reorganizing SYNMAP biomes into common model PFTs
-#     see Synmap_Crosswalk.xlsx
-#     Code    Form     Leaf       Phenology
-#      1      Tree     Needle     Evergreen
-#      2      Tree     Needle     Deciduous
-#      3      Tree     Broad      Evergreen
-#      4      Tree     Broad      Deciduous
-#      5      Shrub      -            -
-#      6      Grass      -            - 
+# 8b) Reorganizing SYNMAP biomes into common model PFTs following
+#     Poulter et al. 2015
+#     PFT   Code    Form     Leaf       Phenology
+#      1    TBrEv   Tree     Broad      Evergreen
+#      2    TBrDe   Tree     Broad      Deciduous
+#      3    TNeEv   Tree     Needle     Evergreen
+#      4    TNeDe   Tree     Needle     Deciduous
+#      5    SBrEv   Shrub    Broad      Evergreen
+#      6    SBrDe   Shrub    Broad      Deciduous
+#      7    SNeEv   Shrub    Needle     Evergreen
+#      8    SNeDe   Shrub    Needle     Deciduous
+#      9    Grass   Grass      -            - 
+#     10    Bare    Bare       -            - 
+#
+# Steps
+# 8.1) Reclassify SYNMAP biomes into LCCS biomes
+# 8.2) Convert LCCS biomes to PFTs
 # --------------------
-# Create a blank raster
-paleon.pfts <- brick(ncols=ncol(frac.biome), nrows=nrow(frac.biome), nl=6,
+# Load Crosswalk dataframes
+biome2pft <- read.csv("Poulter2015_Table2_LCCS_Crosswalk.csv")
+biome2pft$LCCS_Code <- as.factor(paste0("X", biome2pft$LCCS_Code))
+biome2pft[is.na(biome2pft)] <- 0
+summary(biome2pft)
+
+synmap2lccs <- read.csv("SYNMAP_LCCS_Crosswalk.csv", na.strings="-")
+# synmap2lccs$LCCS_Code1 <- as.factor(paste0("X", synmap2lccs$LCCS_Code1))
+# synmap2lccs$LCCS_Code2 <- as.factor(ifelse(!is.na(synmap2lccs$LCCS_Code2), paste0("X", synmap2lccs$LCCS_Code2), NA))
+summary(synmap2lccs)
+
+
+# Create some blank rasters
+# LCCS Biomes
+lccs.biomes <- brick(ncols=ncol(frac.biome), nrows=nrow(frac.biome), nl=nrow(biome2pft),
                      xmn=xmin(frac.biome), xmx=xmax(frac.biome), 
                      ymn=ymin(frac.biome), ymx=ymax(frac.biome),
                      crs=projection(frac.biome))
-paleon.pfts <- setValues(paleon.pfts, NA)
-names(paleon.pfts) <- paste0("X", 1:6)
+lccs.biomes <- setValues(lccs.biomes, 0)
+names(lccs.biomes) <- biome2pft$LCCS_Code
+lccs.biomes <- mask(lccs.biomes, paleon)
+# plot(lccs.biomes)
 
-# Sum biomes & weighted biomes according to excel crosswalk
-paleon.pfts[[1]] <- frac.biome[[1]] + sum(frac.biome[[c(3,7,9,10,12,16,19,21,25,28,30,34)]]*0.5) + sum(frac.biome[[c(18,27,36)]]*0.25)
-paleon.pfts[[2]] <- frac.biome[[2]] + sum(frac.biome[[c(8,11,3,20,29)]]*0.5)
-paleon.pfts[[3]] <- frac.biome[[4]] + sum(frac.biome[[c(6,13,7,22,31)]]*0.5)
-paleon.pfts[[4]] <- frac.biome[[5]] + sum(frac.biome[[c(14,15,17,9,8,6,23,24,26,32,33,35)]]*0.5) + sum(frac.biome[[c(18,27,36)]]*0.25)
-paleon.pfts[[5]] <- sum(frac.biome[[c(37,40)]]) + sum(frac.biome[[c(10:18,38,39)]]*0.5)
-paleon.pfts[[6]] <- sum(frac.biome[[41:43]]) + sum(frac.biome[[19:39]]*0.5)
-names(paleon.pfts) <- paste0("X", 1:6)
+paleon.pfts <- brick(ncols=ncol(frac.biome), nrows=nrow(frac.biome), nl=ncol(biome2pft)-2,
+                     xmn=xmin(frac.biome), xmx=xmax(frac.biome), 
+                     ymn=ymin(frac.biome), ymx=ymax(frac.biome),
+                     crs=projection(frac.biome))
+paleon.pfts <- setValues(paleon.pfts, 0)
+paleon.pfts <- mask(paleon.pfts, paleon)
+names(paleon.pfts) <- names(biome2pft)[3:ncol(biome2pft)]
 
-plot(paleon.pfts)
-plot(frac.biome[[9]])
+
+# 8.1) Convert SYNMAP Biomes to LCCS (used in Poulter 2015)
+for(i in 1:nrow(synmap2lccs)){
+	if(!is.na(synmap2lccs[i,"LCCS_Code2"])){
+		biome1 <- paste0("X", synmap2lccs[i,"LCCS_Code1"])
+		biome2 <- paste0("X", synmap2lccs[i,"LCCS_Code2"])
+		lccs.biomes[[biome1]] <- lccs.biomes[[biome1]] + frac.biome[[i]]*0.5
+		lccs.biomes[[biome2]] <- lccs.biomes[[biome2]] + frac.biome[[i]]*0.5
+	} else {
+		biome1 <- paste0("X", synmap2lccs[i,"LCCS_Code1"])
+		lccs.biomes[[biome1]] <- lccs.biomes[[biome1]] + frac.biome[[i]]
+	}
+}
+lccs.biomes
+
+plot(lccs.biomes, zlim=c(0,1))
+
+
+# 8.2) Convert LCCS Biomes to PFTs following Poulter 2015
+for(i in 1:nrow(biome2pft)){
+	for(j in names(paleon.pfts)){
+		paleon.pfts[[j]] <- paleon.pfts[[j]] + lccs.biomes[[i]]*biome2pft[i,j]*.01
+	}
+}
+paleon.pfts
+plot(paleon.pfts, zlim=c(0,1))
+
 # Normalizing so that all PFT coverage sums to 1
 paleon.sum <- sum(paleon.pfts)
 paleon.sum
@@ -182,7 +232,7 @@ for(i in 1:nlayers(paleon.pfts)){
 	paleon.pfts[[i]] <- paleon.pfts[[i]]/paleon.sum
 }
 paleon.pfts
-names(paleon.pfts) <- paste0("X", 1:6)
+names(paleon.pfts) <- names(biome2pft)[3:(ncol(biome2pft))]
 plot(paleon.pfts, zlim=c(0,1))
 # --------------------
 
@@ -227,7 +277,7 @@ ggplot(biome.df) +
 	ggtitle("Dominant Biome Type (modified from SYNMAP)") +
     scale_x_continuous(limits=range(biome.df$lon), expand=c(0,0), name="Longitude (degrees)") +
     scale_y_continuous(limits=range(biome.df$lat), expand=c(0,0), name="Latitude (degrees)") +
-	scale_fill_manual(values=biome.colors) +
+	scale_fill_manual(values=biome.colors, name="Biome") +
     coord_equal(ratio=1) +
 	# theme(legend.position="bottom") +
     theme(axis.text.x =element_text(color="black", size=rel(2)),
@@ -242,17 +292,31 @@ dev.off()
 
 # ------------------
 # 1) pft classification
+#     PFT   Code    Form     Leaf       Phenology
+#      1    TBrEv   Tree     Broad      Evergreen
+#      2    TBrDe   Tree     Broad      Deciduous
+#      3    TNeEv   Tree     Needle     Evergreen
+#      4    TNeDe   Tree     Needle     Deciduous
+#      5    SBrEv   Shrub    Broad      Evergreen
+#      6    SBrDe   Shrub    Broad      Deciduous
+#      7    SNeEv   Shrub    Needle     Evergreen
+#      8    SNeDe   Shrub    Needle     Deciduous
+#      9    Grass   Grass      -            - 
+#     10    Bare    Bare       -            - 
 # ------------------
 paleon.pft <- stack(file.path(biom.out, "biome_potential_vegtype_pft_fraction.nc"))
-plot(paleon.pft)
+names(paleon.pft)[1:9] <- paste0("X0",1:9)
+paleon.pft
+plot(paleon.pft, zlim=c(0,1))
 
 pft.df1 <- data.frame(rasterToPoints(paleon.pft))
 names(pft.df1)[1:2] <- c("lon", "lat")
 
 pft.df <- stack(pft.df1[,3:ncol(pft.df1)])
 names(pft.df) <- c("fraction", "PFT")
+
 pft.df[,c("lon", "lat")] <- pft.df1[,c("lon", "lat")]
-levels(pft.df$PFT) <- c("1. Tree, Needle Evg", "2. Tree, Needle Decid", "3. Tree, Broad Evg", "4. Tree, Broad Decid", "5. Shrub", "6. Grass")
+levels(pft.df$PFT) <- c("1. Tree, Broad Evg", "2. Tree, Broad Decid", "3. Tree, Needle Evg", "4. Tree, Needle Decid", "5. Shrub, Broad Evg", "6. Shrub, Broad Decid", "7. Shrub, Needle Evg", "8. Shrub, Needle Decid", "Grass (C3)", "10. Bare/Non-Vegetated")
 summary(pft.df)
 
 png(file.path(biom.out, "Biome_PotentialVegetation_PFT_Fraction.png"), height=600, width=1000)
