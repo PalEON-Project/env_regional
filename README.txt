@@ -1,6 +1,6 @@
 Information about PalEON MIP Phase 2 (Regional) Environmental Drivers
 Christy Rollinson, crollinson@gmail.com
-17 September 2015
+10 October 2015
 
 This directory contains the environmental drivers for phase 2 MIP runs (regional runs, 
 formerly phase 1b) & any scripts used to generate them.  Note for BU paleon users: all 
