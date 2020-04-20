@@ -16,3 +16,4 @@ env_paleon/
 *.xlsx
 
 Synmap_Crosswalk.xlsx
+.DS_Store
